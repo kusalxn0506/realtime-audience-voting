@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — PechaKucha Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0b08; --ink-2: #151210; --ink-3: #1c1916;
+  --paper: #f4ead9; --text: #f2e8d8; --text-dim: #b6ab95; --text-faint: #7d745f;
+  --seal: #a8402f; --seal-bright: #c9573f; --seal-glow: rgba(168,64,47,0.35);
+  --gold: #b6913f; --gold-bright: #d4af5f; --gold-glow: rgba(212,175,95,0.25);
+  --line: rgba(244,234,217,0.08); --line-strong: rgba(244,234,217,0.15);
+  --glass: rgba(21,18,16,0.75); --glass-border: rgba(244,234,217,0.1);
+  --green: #2ecc71; --red: #e74c3c;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink); color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; line-height: 1.6;
+  min-height: 100vh; padding: 30px 20px 80px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 12px; margin-bottom: 30px;
+}
+.brand { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.brand strong { color: var(--gold-bright); }
+.user-info { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-dim); }
+.user-info img { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line-strong); }
+
+.card {
+  background: var(--ink-2); border: 1px solid var(--line);
+  border-radius: 14px; padding: 28px; margin-bottom: 24px;
+}
+h1, h2 { font-family: 'Fraunces', serif; color: var(--paper); }
+h1 { font-size: 2rem; margin-bottom: 8px; }
+h2 { font-size: 1.3rem; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+p { color: var(--text-dim); margin-bottom: 18px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--seal); color: #fff; padding: 10px 20px;
+  border: none; border-radius: 6px; font-weight: 600; font-family: inherit;
+  font-size: 14px; cursor: pointer; transition: background 0.2s, transform 0.15s;
+}
+.btn:hover { background: var(--seal-bright); transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: var(--ink); }
+.btn-gold:hover { background: var(--gold-bright); }
+.btn-outline { background: transparent; border: 1px solid var(--line-strong); color: var(--text-dim); }
+.btn-outline:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
+.btn-danger { background: rgba(231,76,60,0.2); border: 1px solid var(--red); color: #ff8888; }
+.btn-danger:hover { background: var(--red); color: #fff; }
+
+.status-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 100px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase;
+}
+.status-open { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid var(--green); }
+.status-closed { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid var(--red); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-box { background: var(--ink-3); padding: 18px; border-radius: 10px; border: 1px solid var(--line); }
+.stat-box .num { font-family: 'Fraunces', serif; font-size: 2rem; color: var(--gold-bright); font-weight: 600; }
+.stat-box .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-faint); text-transform: uppercase; }
+
+pre {
+  background: #000; padding: 20px; border-radius: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #a6e22e;
+  overflow-x: auto; max-height: 400px; border: 1px solid #333; margin-top: 14px;
+}
+.actions-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <div class="brand"><strong>PechaKucha</strong> Admin Console</div>
+    <div id="topbarUser" class="user-info" style="display: none;">
+      <img id="adminPhoto" src="" alt="Admin">
+      <span id="adminEmailText"></span>
+      <button id="logoutBtn" class="btn btn-outline" style="padding: 4px 10px; font-size: 12px;">Sign Out</button>
+    </div>
+  </div>
+
+  <div id="authSection" class="card" style="text-align: center; padding: 60px 20px;">
+    <h1>Tournament Control Center</h1>
+    <p>Sign in with your administrator Google account to manage voting sessions and speaker submissions.</p>
+    <button id="loginBtn" class="btn btn-gold" style="padding: 14px 28px; font-size: 15px;">Sign in with Google</button>
+  </div>
+
+  <div id="dashboardSection" style="display: none;">
+    
+    <!-- VOTING CONTROL -->
+    <div class="card">
+      <h2>Live Session Controls</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="label">Voting Status</div>
+          <div style="margin-top: 8px;"><span id="votingStatusBadge" class="status-badge status-closed">Checking...</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Total Votes Cast</div>
+          <div class="num" id="totalVotesCount">0</div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button id="toggleVotingBtn" class="btn btn-gold">Toggle Voting Session</button>
+        <button id="exportCsvBtn" class="btn btn-outline">Export Votes to CSV</button>
+        <button id="resetVotesBtn" class="btn btn-danger">Reset All Votes</button>
+      </div>
+    </div>
+
+    <!-- SPEAKER SUBMISSIONS EXTRACTOR -->
+    <div class="card">
+      <h2>Speaker Submissions & Generator</h2>
+      <p>Pulls verified submissions from the <code>submissions</code> collection and creates an exportable <code>participants.js</code> file.</p>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Found <strong id="subCount" style="color: var(--gold-bright);">0</strong> speaker submissions</span>
+        <button id="copyJsBtn" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Copy participants.js</button>
+      </div>
+
+      <pre id="outputCode">Click 'Refresh Submissions' to load registered speakers...</pre>
+      
+      <div class="actions-row">
+        <button id="loadSubmissionsBtn" class="btn btn-gold">Refresh Submissions</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+let isVotingOpen = false;
+let currentVotes = [];
+
+// Auth handling
+document.getElementById('loginBtn').addEventListener('click', () => signInWithPopup(auth, provider));
+document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const isAuthorized = (ADMIN_EMAIL === "admin@example.com") || (user.email === ADMIN_EMAIL);
+    if (!isAuthorized) {
+      alert(`Access Restricted. ${user.email} is not listed in ADMIN_EMAIL.`);
+      signOut(auth);
+      return;
+    }
+
+    document.getElementById('authSection').style.display = 'none';
+    document.getElementById('dashboardSection').style.display = 'block';
+    document.getElementById('topbarUser').style.display = 'flex';
+    document.getElementById('adminPhoto').src = user.photoURL || '';
+    document.getElementById('adminEmailText').textContent = user.email;
+
+    initListeners();
+  } else {
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('dashboardSection').style.display = 'none';
+    document.getElementById('topbarUser').style.display = 'none';
+  }
+});
+
+function initListeners() {
+  // Listen to voting open/closed status
+  onSnapshot(doc(db, "config", "voting"), (snap) => {
+    if (snap.exists()) {
+      isVotingOpen = snap.data().open === true;
+    } else {
+      isVotingOpen = false;
+    }
+    const badge = document.getElementById('votingStatusBadge');
+    badge.textContent = isVotingOpen ? 'OPEN' : 'CLOSED';
+    badge.className = 'status-badge ' + (isVotingOpen ? 'status-open' : 'status-closed');
+  });
+
+  // Listen to live votes count
+  onSnapshot(collection(db, "votes"), (snap) => {
+    document.getElementById('totalVotesCount').textContent = snap.size;
+    currentVotes = [];
+    snap.forEach(d => currentVotes.push(d.data()));
+  });
+
+  loadSubmissions();
+}
+
+// Toggle voting session
+document.getElementById('toggleVotingBtn').addEventListener('click', async () => {
+  const newState = !isVotingOpen;
+  await setDoc(doc(db, "config", "voting"), {
+    open: newState,
+    updatedAt: new Date()
+  });
+  alert(`Voting session is now ${newState ? 'OPEN' : 'CLOSED'}`);
+});
+
+// Reset votes
+document.getElementById('resetVotesBtn').addEventListener('click', async () => {
+  if (!confirm('CAUTION: Are you sure you want to permanently delete all cast votes? This cannot be undone.')) return;
+  
+  const snap = await getDocs(collection(db, "votes"));
+  const deletes = snap.docs.map(d => deleteDoc(d.ref));
+  await Promise.all(deletes);
+  alert('All votes have been cleared.');
+});
+
+// Export CSV
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
+  if (!currentVotes.length) {
+    alert('No votes cast yet to export.');
+    return;
+  }
+  let csv = 'StudentId,VoterEmail,VoterName,SpeakerId,SpeakerName,Timestamp\n';
+  currentVotes.forEach(v => {
+    const time = v.timestamp?.toDate ? v.timestamp.toDate().toISOString() : '';
+    csv += `"${v.studentId || ''}","${v.userEmail || ''}","${v.userName || ''}","${v.participantId || ''}","${v.participantName || ''}","${time}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pechakucha_votes_${Date.now()}.csv`;
+  a.click();
+});
+
+// Load Submissions
+async function loadSubmissions() {
+  const pre = document.getElementById('outputCode');
+  pre.textContent = 'Loading submissions...';
+  try {
+    const snap = await getDocs(collection(db, "submissions"));
+    document.getElementById('subCount').textContent = snap.size;
+    
+    if (snap.empty) {
+      pre.textContent = '// No speaker submissions registered yet via speaker-portal.html';
+      return;
+    }
+
+    let code = 'export const participants = [\n';
+    let index = 0;
+    snap.forEach(d => {
+      index++;
+      const data = d.data();
+      const id = `p${index}`;
+      const num = `#${String(index).padStart(3, '0')}`;
+      const bio = (data.bio || '').replace(/"/g, '\\"').replace(/\n/g, ' ');
+      code += `  {\n`;
+      code += `    id: "${id}",\n`;
+      code += `    name: "${data.name || ''}",\n`;
+      code += `    number: "${num}",\n`;
+      code += `    topic: "${data.topic || 'Lightning Talk'}",\n`;
+      code += `    bio: "${bio}",\n`;
+      code += `    image: "${data.image || ''}"\n`;
+      code += `  }${index < snap.size ? ',' : ''}\n`;
+    });
+    code += '];';
+    pre.textContent = code;
+  } catch (err) {
+    pre.textContent = 'Error loading submissions: ' + err.message;
+  }
+}
+
+document.getElementById('loadSubmissionsBtn').addEventListener('click', loadSubmissions);
+
+document.getElementById('copyJsBtn').addEventListener('click', () => {
+  const code = document.getElementById('outputCode').textContent;
+  navigator.clipboard.writeText(code).then(() => alert('Copied participants.js to clipboard!'));
+});
+</script>
+</body>
+</html>

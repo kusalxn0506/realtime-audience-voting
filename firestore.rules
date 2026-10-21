@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      // Replace with your tournament administrator's Google email
+      return isAuthenticated() && (
+        request.auth.token.email == "admin@example.com" ||
+        request.auth.token.email == "kusal.xn@gmail.com"
+      );
+    }
+
+    // Voting Session Configuration (Controls Open / Closed state)
+    match /config/voting {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Speaker Submissions (from speaker-portal.html)
+    match /submissions/{userId} {
+      // Anyone logged in can read the speaker profiles
+      allow read: if isAuthenticated();
+      // Speakers can only upload or edit their own profile
+      allow create, update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if isAdmin();
+    }
+
+    // Audience Votes
+    // Document ID is the Attendee / Student ID (guarantees one vote per ID)
+    match /votes/{voteId} {
+      allow read: if isAuthenticated();
+      
+      // Allow voter to cast vote if authenticated and payload matches their auth
+      allow create, update: if isAuthenticated()
+        && request.resource.data.userEmail == request.auth.token.email
+        && request.resource.data.studentId == voteId;
+        
+      // Only the tournament administrator can clear/reset votes
+      allow delete: if isAdmin();
+    }
+  }
+}
