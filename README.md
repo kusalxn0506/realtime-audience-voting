@@ -1,4 +1,4 @@
-# ⚡ Real-Time Audience Voting Platform
+#  Real-Time Audience Voting Platform
 
 > **A high-concurrency, zero-server real-time audience voting system and cinematic stage display engineered for lightning talk presentation tournaments.**
 
