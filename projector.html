@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Leaderboard & Stage Display — PechaKucha</title>
+<title>Live Leaderboard & Stage Display — Real-Time Audience Voting</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,400&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ html, body {
       <div class="winner-stat"><div class="num" id="winnerVotes">0</div><div class="label">Votes Each</div></div>
       <div class="winner-stat"><div class="num" id="winnerPct">0%</div><div class="label">Of Total</div></div>
     </div>
-    <div class="winner-badge" id="winnerBadge">🏆 PechaKucha 2026 Champion</div>
+    <div class="winner-badge" id="winnerBadge">🏆 Tournament Champion</div>
   </div>
   <div class="mini-scoreboard" id="miniScoreboard"></div>
 </div>
@@ -559,7 +559,7 @@ function triggerWinnerReveal() {
     badgeText.innerHTML = `🏆 PechaKucha 2026 Co-Champions (${winners.length})`;
   } else {
     suspenseText.textContent = "And the winner is...";
-    badgeText.innerHTML = "🏆 PechaKucha 2026 Champion";
+    badgeText.innerHTML = "🏆 Tournament Champion";
   }
 
   profilesContainer.innerHTML = winners.map(w => `

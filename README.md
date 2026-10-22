@@ -1,4 +1,4 @@
-# ⚡ PechaKucha Live Voting
+# ⚡ Real-Time Audience Voting Platform
 
 > **A high-concurrency, zero-server real-time audience voting system and cinematic stage display engineered for lightning talk presentation tournaments.**
 
@@ -16,7 +16,7 @@ During high-speed presentation tournaments—such as **PechaKucha (20x20)** or u
 
 Off-the-shelf polling tools (Slido, Mentimeter) often struggle under auditorium Wi-Fi congestion, impose steep pricing tiers for large crowds, and lack cinematic stage visuals.
 
-**PechaKucha Live Voting** is an open-source, zero-server web platform built with vanilla web standards and Firebase. It handled **200+ concurrent live voters** with sub-second synchronization, zero backend servers, and zero downtime.
+**Real-Time Audience Voting Platform** is an open-source, zero-server web platform built with vanilla web standards and Firebase. It handled **200+ concurrent live voters** with sub-second synchronization, zero backend servers, and zero downtime.
 
 ---
 
@@ -69,15 +69,15 @@ Off-the-shelf polling tools (Slido, Mentimeter) often struggle under auditorium 
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/kusalxn0506/pechakucha-live-voting.git
-cd pechakucha-live-voting
+git clone https://github.com/kusalxn0506/realtime-audience-voting.git
+cd realtime-audience-voting
 ```
 
 ### 2. Set Up Firebase
 1. Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
 2. Under **Build > Authentication**, enable **Google** as a sign-in provider.
 3. Under **Build > Firestore Database**, create a database in production mode.
-4. Copy the contents of [`firestore.rules`](file:///Users/souron_xn/Downloads/kusal-nirmala-portfolio_6%20copy/pechakucha-live-voting/firestore.rules) into your Firebase Console's **Rules** tab and publish.
+4. Copy the contents of [`firestore.rules`](file:///Users/souron_xn/Downloads/kusal-nirmala-portfolio_6%20copy/realtime-audience-voting/firestore.rules) into your Firebase Console's **Rules** tab and publish.
 
 ### 3. Configure Credentials
 Copy `firebase-config.example.js` to `firebase-config.js` and paste your Firebase Web App configuration:
@@ -115,7 +115,7 @@ Open `http://localhost:8000/index.html` in your browser!
 ## 📁 Repository Structure
 
 ```
-pechakucha-live-voting/
+realtime-audience-voting/
 ├── index.html                  # Responsive Audience Voting Client
 ├── projector.html              # Stage Projector Leaderboard & Timer Screen
 ├── speaker-portal.html         # Speaker Registration & Canvas Compression Form
@@ -180,4 +180,4 @@ Originally deployed and battle-tested for the **NSBM Faculty of Computing 26.2 P
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — feel free to use, modify, and deploy it for your own university events, tech meetups, and conferences. See [`LICENSE`](file:///Users/souron_xn/Downloads/kusal-nirmala-portfolio_6%20copy/pechakucha-live-voting/LICENSE) for details.
+This project is licensed under the **MIT License** — feel free to use, modify, and deploy it for your own university events, tech meetups, and conferences. See [`LICENSE`](file:///Users/souron_xn/Downloads/kusal-nirmala-portfolio_6%20copy/realtime-audience-voting/LICENSE) for details.
